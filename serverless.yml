@@ -1,4 +1,4 @@
-service: my-service
+service: my-reminder
 
 provider:
   name: aws
@@ -28,48 +28,48 @@ functions:
       # Invoke the Lambda function every weekend at 1pm US/Eastern Time
       - schedule: cron(30 22 ? * SUN,SAT *)
   create:
-    handler: pets/create.create
+    handler: task/create.create
     events:
       - http:
-          path: pets
+          path: task
           method: post
           cors: true
 
   list:
-    handler: pets/list.list
+    handler: task/list.list
     events:
       - http:
-          path: pets
+          path: task
           method: get
           cors: true
 
   get:
-    handler: pets/get.get
+    handler: task/get.get
     events:
       - http:
-          path: pets/{id}
+          path: task/{id}
           method: get
           cors: true
 
   update:
-    handler: pets/update.update
+    handler: task/update.update
     events:
       - http:
-          path: pets/{id}
+          path: task/{id}
           method: put
           cors: true
 
   delete:
-    handler: pets/delete.delete
+    handler: task/delete.delete
     events:
       - http:
-          path: pets/{id}
+          path: task/{id}
           method: delete
           cors: true
 
 resources:
   Resources:
-    PetsTable:
+    TaskTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain # Keeps around the DynamoDB resource when we redeploy/destroy
       Properties:

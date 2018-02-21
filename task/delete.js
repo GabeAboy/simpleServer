@@ -21,7 +21,7 @@ module.exports.delete = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error);
-      callback(new Error('Couldn\'t remove the pet item.'));
+      callback(new Error('Couldn\'t remove the task item.'));
       return;
     }
 

@@ -12,12 +12,11 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 module.exports.create = (event, context, callback) => {
   const timestamp = new Date().getTime();
   console.info(event.body)
-  console.info(typeof event.body)
   console.info(JSON.parse(event.body))
   const data = JSON.parse(event.body);
-  if (typeof data.petName !== 'string' || typeof data.petBreed !== 'string') {
+  if (typeof data.taskName !== 'string' || typeof data.description !== 'string') {
     console.error('Validation Failed');
-    callback(new Error('Couldn\'t create the pet item.'));
+    callback(new Error('Couldn\'t create the task item.'));
     return;
   }
 
@@ -25,8 +24,9 @@ module.exports.create = (event, context, callback) => {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
       id: uuid.v1(),
-      petName: data.petName,
-      petBreed: data.petBreed,
+      taskName: data.taskName,
+      description: data.description,
+      progress: data.progress,
       createdAt: timestamp,
       updatedAt: timestamp,
     },
@@ -37,7 +37,7 @@ module.exports.create = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error);
-      callback(new Error('Couldn\'t create the pet item.'));
+      callback(new Error('Couldn\'t create the task item.'));
       return;
     }
 

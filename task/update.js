@@ -25,12 +25,13 @@ module.exports.update = (event, context, callback) => {
       id: event.pathParameters.id,
     },
     ExpressionAttributeValues: {
-      ':petName': data.petName,
-      ':petBreed': data.petBreed,
+      ':taskName': data.taskName,
+      ':description': data.description,
+      ':progress': data.progress,
       ':checked': data.checked,
       ':updatedAt': timestamp,
     },
-    UpdateExpression: 'SET petName = :petName, petBreed = :petBreed, updatedAt = :updatedAt',
+    UpdateExpression: 'SET taskName = :taskName, description = :description, progress = :progress, updatedAt = :updatedAt',
     ReturnValues: 'ALL_NEW',
   };
 
