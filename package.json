@@ -14,5 +14,8 @@
     "ses"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^3.2.1"
+  }
 }
