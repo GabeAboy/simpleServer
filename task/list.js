@@ -13,6 +13,8 @@ const params = {
 
 module.exports.list = (event, context, callback) => {
   // fetch all pets from the database
+  console.info('we made it')
+  console.info(event,context,callback)
   dynamoDb.scan(params, (error, result) => {
     // handle potential errors
     if (error) {
