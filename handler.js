@@ -14,7 +14,8 @@ module.exports.sendReminderDaily = (event, context, callback) => {
             FunctionName: 'my-reminder-dev-list'
           }
           //Do I need lambda invoke's call back
-        var x = lambda.invoke(opts, function (err, data) {
+        var obj;
+        lambda.invoke(opts, function (err, data) {
             console.log("Entered invoke")
             thing = "POPOPO"
             if (err) {
@@ -26,11 +27,11 @@ module.exports.sendReminderDaily = (event, context, callback) => {
                 statusCode: 200,
                 body: JSON.parse(data.Payload)
               }
-              return response
+              obj = data.Payload
               callback(null, response)
             }
           })
-        console.log(x)
+        console.info("obj",this)
 
     const targetFunction = "task/list.list" ;
     var toAndFromAddress = 'gabeaboy@gmail.com';
@@ -49,7 +50,7 @@ module.exports.sendReminderDaily = (event, context, callback) => {
                 },
                 Text: {
                     Charset: "UTF-8",
-                    Data: "Remember to continue helping the Woof Garden in your Pluralsight course!"
+                    Data: "Remember to continue your work"
                 }
             },
             Subject: {

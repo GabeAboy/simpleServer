@@ -8,7 +8,11 @@ const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-depe
 // - AWS Documentation
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const params = {
-  TableName: process.env.DYNAMODB_TABLE,
+  ExpressionAttributeValues: {
+    ':progress': 'Progress' 
+  },
+  FilterExpression: 'progress = :progress',
+  TableName: process.env.DYNAMODB_TABLE
 };
 
 module.exports.list = (event, context, callback) => {
