@@ -1,38 +1,45 @@
 'use strict';
 
 module.exports.sendReminderDaily = (event, context, callback) => {
-
+    var thing;
     var AWS = require('aws-sdk');
     AWS.config.update({ region: 'us-east-1' });
     var ses = new AWS.SES();
     var fs = require('fs');
-    console.info('Start')
+    console.info('Start');
     var emailHtml = fs.readFileSync('./dailyReminder.html', 'utf-8');
-    const promiseInvoke = ( functionName ) => {
-        console.info(functionName,'Starting promiseInvoke with native promise');
+   
         const lambda = new AWS.Lambda();
-        return lambda.invoke({
-            InvocationType: 'Event',
-            FunctionName: functionName.targetFunction,
-            LogType: 'None',
-    
-        }).promise();
-    };
+        var opts = {
+            FunctionName: 'my-reminder-dev-list'
+          }
+          //Do I need lambda invoke's call back
+        var x = lambda.invoke(opts, function (err, data) {
+            console.log("Entered invoke")
+            thing = "POPOPO"
+            if (err) {
+              console.log('error : ' + err)
+              callback(err, null)
+            } else if (data) {
+                console.info("body",data)
+              const response = {
+                statusCode: 200,
+                body: JSON.parse(data.Payload)
+              }
+              return response
+              callback(null, response)
+            }
+          })
+        console.log(x)
+
     const targetFunction = "task/list.list" ;
-    var toAndFromAdress = 'gabeaboy@gmail.com'
-    promiseInvoke({ targetFunction }).then(() => {
-        console.log('Have info')
-        callback(null, null)
-    })
-        .catch(error => {
-            console.info('Error: ',error)
-            callback(error)
-        })
+    var toAndFromAddress = 'gabeaboy@gmail.com';
+   
     console.info('exit')
 
     var params = {
         Destination: {
-            ToAddresses: [toAndFromAdress]
+            ToAddresses: [toAndFromAddress]
         },
         Message: {
             Body: {
@@ -50,8 +57,8 @@ module.exports.sendReminderDaily = (event, context, callback) => {
                 Data: "Woof Garden Reminder"
             }
         },
-        ReplyToAddresses: [toAndFromAdress],
-        Source: toAndFromAdress,
+        ReplyToAddresses: [toAndFromAddress],
+        Source: toAndFromAddress,
     };
     console.info('End')
     ses.sendEmail(params, function (err, data) {
@@ -71,10 +78,10 @@ module.exports.sendReminderWeekend = (event, context, callback) => {
 
     var emailHtml = fs.readFileSync('./weekendReminder.html', 'utf-8');
 
-    var toAndFromAdress = 'gabeaboy@gmail.com'
+    var toAndFromAddress = 'gabeaboy@gmail.com'
     var params = {
         Destination: {
-            ToAddresses: [toAndFromAdress]
+            ToAddresses: [toAndFromAddress]
         },
         Message: {
             Body: {
@@ -92,8 +99,8 @@ module.exports.sendReminderWeekend = (event, context, callback) => {
                 Data: "Woof Garden Reminder"
             }
         },
-        ReplyToAddresses: [toAndFromAdress],
-        Source: toAndFromAdress,
+        ReplyToAddresses: [toAndFromAddress],
+        Source: toAndFromAddress,
     };
 
     ses.sendEmail(params, function (err, data) {
