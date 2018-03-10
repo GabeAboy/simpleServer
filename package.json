@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "serverless",
@@ -17,5 +17,11 @@
   "license": "ISC",
   "dependencies": {
     "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^4.0.1",
+    "jest": "^22.4.2",
+    "source-map-loader": "^0.2.3",
+    "typescript": "^2.7.2"
   }
 }

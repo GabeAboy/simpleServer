@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        // When true ts compiles into js files upon save
+        "watch": true,
+        "outDir": "js"
+    },
+    "files": [
+        "app/app.ts"
+    ]
+}
