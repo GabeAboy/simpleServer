@@ -6,7 +6,7 @@ module.exports.sendReminderDaily = (event, context, callback) => {
     AWS.config.update({ region: 'us-east-1' });
     const lambda = new AWS.Lambda();
     var ses = new AWS.SES();
-    var emailHtml = fs.readFileSync('./dailyReminder.html', 'utf-8');
+    var emailHtml = fs.readFileSync('./template/dailyReminder.html', 'utf-8');
     var toAndFromAddress = 'gabeaboy@gmail.com';
     
     var params = {
