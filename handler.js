@@ -1,43 +1,14 @@
 'use strict';
 
 module.exports.sendReminderDaily = (event, context, callback) => {
-    var thing;
     var AWS = require('aws-sdk');
-    AWS.config.update({ region: 'us-east-1' });
-    var ses = new AWS.SES();
     var fs = require('fs');
-    console.info('Start');
+    AWS.config.update({ region: 'us-east-1' });
+    const lambda = new AWS.Lambda();
+    var ses = new AWS.SES();
     var emailHtml = fs.readFileSync('./dailyReminder.html', 'utf-8');
-   
-        const lambda = new AWS.Lambda();
-        var opts = {
-            FunctionName: 'my-reminder-dev-list'
-          }
-          //Do I need lambda invoke's call back
-        var obj;
-        lambda.invoke(opts, function (err, data) {
-            console.log("Entered invoke")
-            thing = "POPOPO"
-            if (err) {
-              console.log('error : ' + err)
-              callback(err, null)
-            } else if (data) {
-                console.info("body",data)
-              const response = {
-                statusCode: 200,
-                body: JSON.parse(data.Payload)
-              }
-              obj = data.Payload
-              callback(null, response)
-            }
-          })
-        console.info("obj",this)
-
-    const targetFunction = "task/list.list" ;
     var toAndFromAddress = 'gabeaboy@gmail.com';
-   
-    console.info('exit')
-
+    
     var params = {
         Destination: {
             ToAddresses: [toAndFromAddress]
@@ -46,7 +17,7 @@ module.exports.sendReminderDaily = (event, context, callback) => {
             Body: {
                 Html: {
                     Charset: "UTF-8",
-                    Data: emailHtml
+                    Data: <p>HELLO world</p>
                 },
                 Text: {
                     Charset: "UTF-8",
@@ -55,59 +26,34 @@ module.exports.sendReminderDaily = (event, context, callback) => {
             },
             Subject: {
                 Charset: "UTF-8",
-                Data: "Woof Garden Reminder"
-            }
-        },
-        ReplyToAddresses: [toAndFromAddress],
-        Source: toAndFromAddress,
-    };
-    console.info('End')
-    ses.sendEmail(params, function (err, data) {
-        // an error occurred
-        if (err) console.log("error from ses ", err, err.stack);
-        // successful response
-        else callback(null, data);
-    });
-};
-
-module.exports.sendReminderWeekend = (event, context, callback) => {
-
-    var AWS = require('aws-sdk');
-    AWS.config.update({ region: 'us-east-1' });
-    var ses = new AWS.SES();
-    var fs = require('fs');
-
-    var emailHtml = fs.readFileSync('./weekendReminder.html', 'utf-8');
-
-    var toAndFromAddress = 'gabeaboy@gmail.com'
-    var params = {
-        Destination: {
-            ToAddresses: [toAndFromAddress]
-        },
-        Message: {
-            Body: {
-                Html: {
-                    Charset: "UTF-8",
-                    Data: emailHtml
-                },
-                Text: {
-                    Charset: "UTF-8",
-                    Data: "Here's a weekend Remember that puppies are adorable!!"
-                }
-            },
-            Subject: {
-                Charset: "UTF-8",
-                Data: "Woof Garden Reminder"
+                Data: "Tasks in progress"
             }
         },
         ReplyToAddresses: [toAndFromAddress],
         Source: toAndFromAddress,
     };
 
-    ses.sendEmail(params, function (err, data) {
-        // an error occurred
-        if (err) console.log(err, err.stack);
-        // successful response
-        else callback(null, data);
-    });
+    new Promise((resolve, reject) => {
+        lambda.invoke({
+            FunctionName: 'my-reminder-dev-list',
+            Payload: JSON.stringify(event, null, 2)
+        }, function (error, data) {
+            if (error) {
+                reject(error);
+            }
+            if (data.Payload) {
+                resolve(data.Payload)
+            }
+            //have all email service be done .then
+        })
+    }).then(function (value){
+        return  JSON.parse(JSON.parse(value).body)
+    }).then(function (parsedValue) {
+        ses.sendEmail(params, function (err, data) {
+            // an error occurred
+            if (err) console.log("error from ses ", err, err.stack);
+            // successful response
+            else callback(null, data);
+        });
+    })
 };
